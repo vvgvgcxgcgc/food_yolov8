@@ -6,11 +6,12 @@ import cv2
 model = YOLO('/workdir/radish/nguyenqh/food_yolov8/runs/detect/train/weights/best.pt')  # pretrained YOLOv8n model
 
 
-def predict(input_img, model = model ):# Chỉ cần thay đổi input_img đc đọc = cv2.imread của ảnh cần predict
+def predict(input_img,output_path, model = model):# Chỉ cần thay đổi input_img đc đọc = cv2.imread của ảnh cần predict
     # Run batched inference on a list of images
     results = model(source=input_img)  # predict on an image
     bb_lists = [] # mỗi phần tử list này là 1 tuple chứa thông tin về một bounding box
     for result in results:
+            result.save(filename=output_path)  # save to disk
             for box in result.boxes:
                 left, top, right, bottom = np.array(box.xyxy.cpu(), dtype=np.float128).squeeze()
                 width = right - left
@@ -27,8 +28,8 @@ def predict(input_img, model = model ):# Chỉ cần thay đổi input_img đc �
 
     return bb_lists
 
-img = cv2.imread('/workdir/radish/nguyenqh/food_yolov8/Vietnamese_Food_data/data/OID/images/valid/0a4d409bfb8e284b_jpg.rf.4793870f9a42bf30321dd51ecd2b59a9.jpg')
-lst = predict(img)
+img = cv2.imread('/workdir/radish/nguyenqh/food_yolov8/Data/images/valid/0c93ee4bf2cddcc7_jpg.rf.8703815a75457622063ceda7e7f26296.jpg' )
+lst = predict(img,'/workdir/radish/nguyenqh/food_yolov8/predicted_img/res1.jpg')
 print(lst)
 
 
